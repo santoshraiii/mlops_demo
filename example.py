@@ -3,6 +3,7 @@ import mlflow.sklearn
 from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+from urllib.parse import urlparse
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
 # Define model hyperparameters
@@ -45,5 +46,20 @@ with mlflow.start_run():
     mlflow.log_metric("recall", recall)
 
     # Log the model
-    mlflow.sklearn.log_model(model, "random_forest_model")
+    remote_server_uri ="https://dagshub.com/santoshraiii/mlops_demo.mlflow"
+    mlflow.set_tracking_uri(remote_server_uri)
+
+    tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
+    if tracking_url_type_store != "file":
+
+        mlflow.sklearn.log_model(
+            model,"model")
+    
+    else:
+        mlflow.sklearn.log_model(model, "random_forest_model")
+
+
+   
+    
 
